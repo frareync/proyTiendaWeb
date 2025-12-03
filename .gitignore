@@ -1,0 +1,54 @@
+# Dependencias de Node.js
+/node_modules
+
+# Archivos de VS Code
+/.vscode/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+/logs/
+
+# Variables de entorno y archivos de sesión
+.env
+.env.*
+
+
+# Archivos de caché
+*.tmp
+*.log
+.DS_Store
+
+# Archivos de configuración de paquetes
+package-lock.json
+
+# Archivos de compilación o de "build" (si se agregan más tarde)
+/dist
+/build
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
