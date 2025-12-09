@@ -1,98 +1,165 @@
 import { useNavigate, useLocation } from 'react-router-dom';
-import { Home, User, LogOut, Store, Users, Truck, Briefcase, Package } from 'lucide-react';
-import { colors } from '../../styles/colors';
+import {
+  Home as HomeIcon,
+  Person as PersonIcon,
+  Logout as LogoutIcon,
+  Store as StoreIcon,
+  Group as GroupIcon,
+  LocalShipping as LocalShippingIcon,
+  Work as WorkIcon,
+  Inventory as InventoryIcon,
+  ShoppingCart as ShoppingCartIcon,
+  Input as InputIcon,
+  PictureAsPdf as PdfIcon
+} from '@mui/icons-material';
+import {
+  Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
+  Box, Typography, Divider, Button, Toolbar
+} from '@mui/material';
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
   const menuItems = [
-    { id: 'dashboard', path: '/dashboard', icon: Home, label: 'Dashboard' },
-    { id: 'categoria', path: '/categoria', icon: User, label: 'Categorias' },
-    { id: 'cliente', path: '/cliente', icon: Users, label: 'Clientes' },
-    { id: 'proveedor', path: '/proveedor', icon: Truck, label: 'Proveedores' },
-    { id: 'vendedor', path: '/vendedor', icon: Briefcase, label: 'Vendedores' },
-    { id: 'producto', path: '/producto', icon: Package, label: 'Gestionar Productos' },
-    { id: 'compra', path: '/store', icon: Store, label: 'Tienda' }
+    { id: 'dashboard', path: '/dashboard', icon: HomeIcon, label: 'Dashboard' },
+    { id: 'categoria', path: '/categoria', icon: PersonIcon, label: 'Categorias' },
+    { id: 'cliente', path: '/cliente', icon: GroupIcon, label: 'Clientes' },
+    { id: 'proveedor', path: '/proveedor', icon: LocalShippingIcon, label: 'Proveedores' },
+    { id: 'vendedor', path: '/vendedor', icon: WorkIcon, label: 'Vendedores' },
+    { id: 'producto', path: '/producto', icon: InventoryIcon, label: 'Gestionar Productos' },
+    { id: 'compra_admin', path: '/compra', icon: ShoppingCartIcon, label: 'Registro Ventas' },
+    { id: 'provee', path: '/provee', icon: InputIcon, label: 'Registrar Suministros' },
+    { id: 'reporte', path: '/reporte', icon: PdfIcon, label: 'Reporte de Ventas' },
   ];
 
   const handleNavigation = (path) => {
     navigate(path);
-    setIsOpen(false);
+    if (setIsOpen) setIsOpen(false);
   };
 
-  return (
-    <>
-      {isOpen && (
-        <div
-          className="fixed inset-0 z-40 lg:hidden backdrop-blur-sm"
-          onClick={() => setIsOpen(false)}
-        />
-      )}
+  const drawerContent = (
+    <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+      <Toolbar />
+      <Box sx={{ p: 2, display: 'flex', alignItems: 'center', gap: 2, borderBottom: 1, borderColor: 'divider' }}>
+        <Box
+          sx={{
+            width: 40,
+            height: 40,
+            bgcolor: '#2C7873',
+            borderRadius: 2,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 'bold',
+            boxShadow: 1
+          }}
+        >
+          MS
+        </Box>
+        <Box>
+          <Typography variant="h6" fontWeight="bold" color="text.primary">MiSistema</Typography>
+          <Typography variant="caption" color="text.secondary">Admin Panel</Typography>
+        </Box>
+      </Box>
 
-      <aside
-        className={`fixed left-0 top-0 h-full z-50 transition-all duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'
-          } lg:translate-x-0 w-72 border-r`}
-        style={{
-          backgroundColor: colors.white,
-          borderColor: colors.gray200
-        }}
-      >
-        <div className="h-20 px-6 flex items-center border-b" style={{ borderColor: colors.gray200 }}>
-          <div className="flex items-center space-x-3">
-            <div
-              className="w-10 h-10 rounded-lg flex items-center justify-center text-white font-bold shadow-sm"
-              style={{ backgroundColor: colors.primary }}
-            >
-              MS
-            </div>
-            <div>
-              <h1 className="text-lg font-bold" style={{ color: colors.dark }}>MiSistema</h1>
-              <p className="text-xs" style={{ color: colors.gray600 }}>Admin Panel</p>
-            </div>
-          </div>
-        </div>
-
-        <nav className="p-4 space-y-1">
-          <p className="px-3 text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: colors.gray600 }}>
-            Menú Principal
-          </p>
+      <Box sx={{ flexGrow: 1, overflowY: 'auto', p: 2 }}>
+        <Typography variant="caption" color="text.secondary" sx={{ fontWeight: 'bold', display: 'block', mb: 1, pl: 1 }}>
+          MENÚ PRINCIPAL
+        </Typography>
+        <List component="nav">
           {menuItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
             return (
-              <button
-                key={item.id}
-                onClick={() => handleNavigation(item.path)}
-                className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 ${isActive ? '' : 'hover:bg-gray-100'
-                  }`}
-                style={{
-                  backgroundColor: isActive ? colors.primary : 'transparent',
-                  color: isActive ? colors.white : colors.gray900
-                }}
-              >
-                <div className="flex items-center space-x-3">
-                  <Icon size={20} />
-                  <span className="font-medium text-sm">{item.label}</span>
-                </div>
-
-              </button>
+              <ListItem key={item.id} disablePadding sx={{ mb: 0.5 }}>
+                <ListItemButton
+                  onClick={() => handleNavigation(item.path)}
+                  selected={isActive}
+                  sx={{
+                    borderRadius: 2,
+                    '&.Mui-selected': {
+                      bgcolor: '#2C7873',
+                      color: 'white',
+                      '&:hover': {
+                        bgcolor: '#205e5a',
+                      },
+                      '& .MuiListItemIcon-root': {
+                        color: 'white',
+                      },
+                    },
+                  }}
+                >
+                  <ListItemIcon sx={{ minWidth: 40, color: isActive ? 'white' : 'inherit' }}>
+                    <Icon fontSize="small" />
+                  </ListItemIcon>
+                  <ListItemText
+                    primary={item.label}
+                    primaryTypographyProps={{ fontSize: '0.875rem', fontWeight: 500 }}
+                  />
+                </ListItemButton>
+              </ListItem>
             );
           })}
-        </nav>
+        </List>
+      </Box>
 
-        <div className="absolute bottom-4 left-4 right-4">
-          <button
-            className="w-full mt-2 flex items-center justify-center space-x-2 px-4 py-2.5
-                      rounded-lg transition-all font-medium text-sm
-                      bg-gray-300 text-gray-900 hover:bg-[#004445] hover:text-white"
-          >
+      <Box sx={{ p: 2, borderTop: 1, borderColor: 'divider' }}>
+        <Button
+          fullWidth
+          variant="contained"
+          color="error"
+          startIcon={<LogoutIcon />}
+          sx={{
+            bgcolor: '#e0e0e0',
+            color: 'black',
+            '&:hover': {
+              bgcolor: '#004445',
+              color: 'white'
+            },
+            boxShadow: 'none',
+            textTransform: 'none',
+            justifyContent: 'center'
+          }}
+        >
+          Cerrar Sesión
+        </Button>
+      </Box>
+    </Box>
+  );
 
-            <LogOut size={18} />
-            <span>Cerrar Sesión</span>
-          </button>
-        </div>
-      </aside>
+  return (
+    <>
+      {/* Mobile Drawer */}
+      <Drawer
+        variant="temporary"
+        open={isOpen}
+        onClose={() => setIsOpen(false)}
+        ModalProps={{
+          keepMounted: true,
+        }}
+        sx={{
+          display: { xs: 'block', lg: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280 },
+        }}
+      >
+        {drawerContent}
+      </Drawer>
+
+      {/* Desktop Drawer */}
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', lg: 'block' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: 280, borderRight: '1px solid #e0e0e0' },
+          width: 280,
+          flexShrink: 0,
+        }}
+        open
+      >
+        {drawerContent}
+      </Drawer>
     </>
   );
 };
