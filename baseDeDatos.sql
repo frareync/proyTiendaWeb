@@ -65,6 +65,14 @@ CREATE TABLE PROVEE (
     FOREIGN KEY (id_proveedor) REFERENCES PROVEEDOR(id_proveedor)
 );
 
+CREATE TABLE USUARIO (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    contrasenia VARCHAR(255) NOT NULL,
+    rol VARCHAR(20) NOT NULL CHECK (rol IN ('ADMIN', 'VENDEDOR')),
+    id_vendedor INT UNIQUE,
+    FOREIGN KEY (id_vendedor) REFERENCES VENDEDOR(id_vendedor)
+);
 
 
 INSERT INTO CLIENTE (nombre, paterno, materno, nacionalidad) VALUES

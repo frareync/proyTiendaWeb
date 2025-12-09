@@ -14,6 +14,7 @@ import estadisticaRutas from './rutas/estadisticaRutas.js';
 
 
 //import categoriaRutas from './rutas/categoriaRutas.js';
+import usuarioRutas from './rutas/usuarioRutas.js'; // IMPORTAMOS RUTAS DE USUARIO
 
 const app = express();
 
@@ -29,6 +30,7 @@ app.use('/', proveedorRutas);
 app.use('/', proveeRutas);
 
 app.use('/', estadisticaRutas);
+app.use('/', usuarioRutas); // RUTAS DE LOGIN Y REGISTRO
 
 // define un puerto y arrancar el proyecto
 const puerto = 3001;
