@@ -17,6 +17,7 @@ import Swal from 'sweetalert2'
 // REFERENCIA SQL
 CREATE TABLE PROVEEDOR (
     id_proveedor INT AUTO_INCREMENT PRIMARY KEY,
+    ci VARCHAR(12),
     nombre VARCHAR(50) NOT NULL,
     paterno VARCHAR(50),
     materno VARCHAR(50),
@@ -35,6 +36,7 @@ const Proveedor = () => {
 
   // Estado para los datos del formulario
   const [formData, SetformData] = useState({
+    ci: '',
     nombre: '',
     paterno: '',
     materno: '',
@@ -85,6 +87,12 @@ const Proveedor = () => {
   const validarFormulario = () => {
     let nuevosErrores = {};
     let esValido = true;
+
+    // Validación CI: Obligatorio
+    if (!formData.ci || formData.ci.trim() === '') {
+      nuevosErrores.ci = 'CI obligatorio';
+      esValido = false;
+    }
 
     // Regex solo letras para nombre/apellidos
     const regexSoloLetras = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ][a-zA-ZÁÉÍÓÚáéíóúÑñ\s]*$/;
@@ -153,6 +161,7 @@ const Proveedor = () => {
       if (modoEdicion) {
         // --- EDITAR ---
         await ActualizarProveedor(proveedorEditado, {
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -172,6 +181,7 @@ const Proveedor = () => {
       } else {
         // --- CREAR ---
         await EnviarProveedor({
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -204,6 +214,7 @@ const Proveedor = () => {
     SetModoEdicion(false);
     SetProveedorEditado(null);
     SetformData({
+      ci: '',
       nombre: '',
       paterno: '',
       materno: '',
@@ -219,6 +230,7 @@ const Proveedor = () => {
     SetModoEdicion(true)
     SetProveedorEditado(proveedor.id_proveedor)
     SetformData({
+      ci: proveedor.ci || '',
       nombre: proveedor.nombre || '',
       paterno: proveedor.paterno || '',
       materno: proveedor.materno || '',
@@ -284,6 +296,7 @@ const Proveedor = () => {
           <TableHead sx={{ bgcolor: 'grey.300' }}>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>CI</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Paterno</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Materno</TableCell>
@@ -302,6 +315,7 @@ const Proveedor = () => {
                 <TableCell component="th" scope="row">
                   {proveedor.id_proveedor}
                 </TableCell>
+                <TableCell>{proveedor.ci}</TableCell>
                 <TableCell>{proveedor.nombre}</TableCell>
                 <TableCell>{proveedor.paterno}</TableCell>
                 <TableCell>{proveedor.materno}</TableCell>
@@ -340,6 +354,17 @@ const Proveedor = () => {
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
           <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            {/* Input CI con validación visual */}
+            <TextField
+              label="CI"
+              name="ci"
+              value={formData.ci}
+              onChange={CambioEntrada}
+              fullWidth
+              variant="outlined"
+              error={!!errors.ci}
+              helperText={errors.ci}
+            />
             {/* Input Nombre con validación visual */}
             <TextField
               label="Nombre"

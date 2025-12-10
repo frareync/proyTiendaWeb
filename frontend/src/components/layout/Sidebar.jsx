@@ -10,7 +10,8 @@ import {
   Inventory as InventoryIcon,
   ShoppingCart as ShoppingCartIcon,
   Input as InputIcon,
-  PictureAsPdf as PdfIcon
+  PictureAsPdf as PdfIcon,
+  AdminPanelSettings as AdminPanelSettingsIcon
 } from '@mui/icons-material';
 import {
   Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText,
@@ -31,6 +32,7 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
     { id: 'compra_admin', path: '/compra', icon: ShoppingCartIcon, label: 'Registro Ventas' },
     { id: 'provee', path: '/provee', icon: InputIcon, label: 'Registrar Suministros' },
     { id: 'reporte', path: '/reporte', icon: PdfIcon, label: 'Reporte de Ventas' },
+    { id: 'usuario', path: '/usuario', icon: AdminPanelSettingsIcon, label: 'Gestión Usuarios' },
   ];
 
   const handleNavigation = (path) => {
@@ -56,11 +58,11 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             boxShadow: 1
           }}
         >
-          MS
+          SrAi
         </Box>
         <Box>
-          <Typography variant="h6" fontWeight="bold" color="text.primary">MiSistema</Typography>
-          <Typography variant="caption" color="text.secondary">Admin Panel</Typography>
+          <Typography variant="h6" fontWeight="bold" color="text.primary">Sistema de Venta Tienda "Sarai"</Typography>
+          <Typography variant="caption" color="text.secondary">Panel de Administración</Typography>
         </Box>
       </Box>
 
@@ -111,6 +113,14 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
           variant="contained"
           color="error"
           startIcon={<LogoutIcon />}
+          onClick={() => {
+            // Lógica para Cerrar Sesión:
+            // 1. Limpiamos la "llave" de acceso (token) y el rol del almacenamiento local.
+            localStorage.removeItem('token');
+            localStorage.removeItem('rol');
+            // 2. Redirigimos al usuario a la pantalla de Login.
+            navigate('/login');
+          }}
           sx={{
             bgcolor: '#e0e0e0',
             color: 'black',

@@ -1,4 +1,4 @@
-import { buscarPorNombre, insertarUsuario } from "../modelos/usuarioModelos.js";
+import { buscarPorNombre, insertarUsuario, obtUsuario, obtienePorId, actualiza, elimina } from "../modelos/usuarioModelos.js";
 import bcrypt from 'bcryptjs'; // "La Trituradora" de contraseñas
 import jwt from 'jsonwebtoken'; // El "Carnet Digital"
 import svgCaptcha from 'svg-captcha'; // Generador de dibujos de texto
@@ -125,5 +125,73 @@ export const login = async (req, res) => {
   } catch (error) {
     console.error("Error en login:", error);
     res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+// --- 4. OBTENER TODOS LOS USUARIOS ---
+export const obtenerUsuarios = async (req, res) => {
+  try {
+    const usuarios = await obtUsuario();
+    // Opcional: Podríamos quitar las contraseñas del resultado antes de enviar
+    res.json(usuarios);
+  } catch (error) {
+    console.error("Error al obtener usuarios:", error);
+    res.status(500).json({ error: "Error al obtener la lista de usuarios" });
+  }
+};
+
+// --- 5. OBTENER UN USUARIO POR ID ---
+export const obtenerUsuario = async (req, res) => {
+  try {
+    const { id } = req.params; // Sacamos el ID de la URL
+    const usuario = await obtienePorId(id);
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario no encontrado" });
+    }
+
+    res.json(usuario);
+  } catch (error) {
+    console.error("Error al obtener usuario:", error);
+    res.status(500).json({ error: "Error al obtener el usuario" });
+  }
+};
+
+// --- 6. ACTUALIZAR USUARIO ---
+export const actualizarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { usuario, contrasenia, rol, id_vendedor } = req.body;
+
+    // Validación básica
+    if (!usuario || !rol) {
+      return res.status(400).json({ error: "Usuario y Rol son obligatorios" });
+    }
+
+    let datosParaActualizar = { usuario, rol, id_vendedor };
+
+    // Si el usuario escribió una nueva contraseña, la encriptamos
+    if (contrasenia && contrasenia.trim() !== "") {
+      const contraseniaEncriptada = await bcrypt.hash(contrasenia, 10);
+      datosParaActualizar.contrasenia = contraseniaEncriptada;
+    }
+
+    const resultado = await actualiza(id, datosParaActualizar);
+    res.json({ mensaje: "Usuario actualizado correctamente", datos: resultado });
+
+  } catch (error) {
+    console.error("Error al actualizar usuario:", error);
+    res.status(500).json({ error: "No se pudo actualizar el usuario" });
+  }
+};
+
+// --- 7. ELIMINAR USUARIO ---
+export const eliminarUsuario = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await elimina(id);
+    res.json({ mensaje: "Usuario eliminado correctamente" });
+  } catch (error) {
+    console.error("Error al eliminar usuario:", error);
+    res.status(500).json({ error: "No se pudo eliminar el usuario" });
   }
 };

@@ -276,6 +276,7 @@ const Compra = () => {
               <TableCell sx={{ fontWeight: 'bold' }}>Cliente</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Vendedor</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Cantidad</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>Fecha</TableCell>
               <TableCell align="center" sx={{ fontWeight: 'bold' }}>Acciones</TableCell>
             </TableRow>
           </TableHead>
@@ -305,6 +306,10 @@ const Compra = () => {
                   {vendedores.find(v => v.id_vendedor === compra.id_vendedor)?.nombre || compra.id_vendedor}
                 </TableCell>
                 <TableCell>{compra.cantidad}</TableCell>
+                <TableCell>
+                  {/* Formateamos la fecha a local si existe */}
+                  {compra.fecha_compra ? new Date(compra.fecha_compra).toLocaleDateString() : '-'}
+                </TableCell>
                 <TableCell align="center">
                   <Stack direction="row" spacing={1} justifyContent="center">
                     <IconButton

@@ -1,4 +1,4 @@
-import { obtTodo, inserta, obtienePorId, actualiza, elimina } from "../modelos/compraModelos.js";
+import { obtTodo, inserta, obtienePorId, actualiza, elimina, obtienePorFecha } from "../modelos/compraModelos.js";
 
 
 // MUESTRA LAS COMPRAS
@@ -51,6 +51,27 @@ export const muestraCompraPorId = async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: error.message });
+  }
+};
+
+// BUSCA COMPRAS POR FECHA (Para Reportes)
+export const muestraCompraPorFecha = async (req, res) => {
+  try {
+    const { fecha } = req.params; // La fecha viene en la URL
+    // Validamos que sea una fecha válida (básico)
+    if (!fecha) {
+      return res.status(400).json({ error: "La fecha es obligatoria" });
+    }
+
+    // Importamos la nueva función del modelo (asegúrate de importarla arriba)
+    const { obtienePorFecha } = await import("../modelos/compraModelos.js");
+
+    const resultado = await obtienePorFecha(fecha);
+    res.json(resultado);
+
+  } catch (error) {
+    console.error("Error al buscar por fecha:", error);
+    res.status(500).json({ error: "Error al obtener reporte por fecha" });
   }
 };
 

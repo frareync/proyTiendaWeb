@@ -8,7 +8,7 @@ import { Edit as EditIcon, Delete as DeleteIcon, PersonAdd as PersonAddIcon } fr
 import {
   Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper,
   Button, TextField, Dialog, DialogTitle, DialogContent, DialogActions,
-  IconButton, Typography, Box, Stack
+  IconButton, Box, Stack
 } from '@mui/material';
 // Importamos SweetAlert2 para mostrar alertas bonitas y modales de confirmación
 import Swal from 'sweetalert2'
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2'
 // COMENTARIO DE REFERENCIA SOBRE LA TABLA EN BASE DE DATOS
 CREATE TABLE CLIENTE (
     id_cliente INT AUTO_INCREMENT PRIMARY KEY, // Identificador único
+    ci VARCHAR(12), // Cédula de Identidad
     nombre VARCHAR(50) NOT NULL, // Nombre obligatorio
     paterno VARCHAR(50), // Apellido Paterno
     materno VARCHAR(50), // Apellido Materno
@@ -33,6 +34,7 @@ const Cliente = () => {
 
   // Estado 'formData': Almacena los datos del formulario que el usuario está escribiendo
   const [formData, SetformData] = useState({
+    ci: '',           // Campo para CI
     nombre: '',       // Campo para el nombre
     paterno: '',      // Campo para el apellido paterno
     materno: '',      // Campo para el apellido materno
@@ -91,6 +93,12 @@ const Cliente = () => {
     let nuevosErrores = {}; // Objeto temporal para acumular errores detectados
     let esValido = true; // Bandera para indicar si el formulario pasa la validación
 
+    // Validación: CI obligatorio
+    if (!formData.ci || formData.ci.trim() === '') {
+      nuevosErrores.ci = 'El CI es obligatorio';
+      esValido = false;
+    }
+
     // Validación: Nombre obligatorio y sin espacios vacíos
     if (!formData.nombre || formData.nombre.trim() === '') {
       nuevosErrores.nombre = 'El nombre es obligatorio';
@@ -141,12 +149,6 @@ const Cliente = () => {
 
     // Ejecutamos la validación. Si devuelve 'false', detenemos el proceso aqui.
     if (!validarFormulario()) {
-      // Opcional: Mostrar una alerta general avisando que hay errores, aunque los helpers ya los muestran
-      /* Swal.fire({
-          icon: 'error',
-          title: 'Formulario con errores',
-          text: 'Por favor corrija los campos marcados en rojo'
-      }); */
       return;
     }
 
@@ -155,6 +157,7 @@ const Cliente = () => {
       if (modoEdicion) {
         // --- LOGICA PARA ACTUALIZAR (EDITAR) ---
         await ActualizarCliente(clienteEditado, {
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -174,6 +177,7 @@ const Cliente = () => {
       } else {
         // --- LOGICA PARA CREAR (NUEVO) ---
         await EnviarCliente({
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -208,6 +212,7 @@ const Cliente = () => {
     SetClienteEditado(null); // Borra el ID del cliente editado
     // Resetea el formulario a valores vacíos
     SetformData({
+      ci: '',
       nombre: '',
       paterno: '',
       materno: '',
@@ -222,6 +227,7 @@ const Cliente = () => {
     SetModoEdicion(true)
     SetClienteEditado(cliente.id_cliente)
     SetformData({
+      ci: cliente.ci || '',
       nombre: cliente.nombre || '',
       paterno: cliente.paterno || '',
       materno: cliente.materno || '',
@@ -298,6 +304,7 @@ const Cliente = () => {
             <TableRow>
               {/* Celdas de cabecera con texto en negrita */}
               <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>CI</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Paterno</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Materno</TableCell>
@@ -317,6 +324,8 @@ const Cliente = () => {
                 <TableCell component="th" scope="row">
                   {cliente.id_cliente}
                 </TableCell>
+                {/* Celda del CI */}
+                <TableCell>{cliente.ci}</TableCell>
                 {/* Celda del Nombre */}
                 <TableCell>{cliente.nombre}</TableCell>
                 {/* Celda del Apellido Paterno */}
@@ -366,6 +375,17 @@ const Cliente = () => {
         <DialogContent sx={{ mt: 2 }}>
           {/* Caja flexible vertical para los inputs */}
           <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            {/* Input para CI */}
+            <TextField
+              label="CI"
+              name="ci"
+              value={formData.ci}
+              onChange={CambioEntrada}
+              fullWidth
+              variant="outlined"
+              error={!!errors.ci}
+              helperText={errors.ci}
+            />
             {/* Input para Nombre con Validación Visual (MUI) */}
             <TextField
               label="Nombre"

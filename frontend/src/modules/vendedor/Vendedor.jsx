@@ -17,6 +17,7 @@ import Swal from 'sweetalert2'
 // COMENTARIO DE REFERENCIA SOBRE LA TABLA EN BASE DE DATOS
 CREATE TABLE VENDEDOR (
     id_vendedor INT AUTO_INCREMENT PRIMARY KEY, // ID único
+    ci VARCHAR(12), // Cédula de Identidad
     nombre VARCHAR(50) NOT NULL, // Nombre obligatorio
     paterno VARCHAR(50), // Paterno (Validaremos que no esté vacío)
     materno VARCHAR(50), // Materno
@@ -34,6 +35,7 @@ const Vendedor = () => {
 
   // Estado 'formData': Almacena los valores de los inputs del formulario
   const [formData, SetformData] = useState({
+    ci: '',
     nombre: '',
     paterno: '',
     materno: '',
@@ -84,6 +86,12 @@ const Vendedor = () => {
   const validarFormulario = () => {
     let nuevosErrores = {}; // Objeto para recolectar errores
     let esValido = true;    // Bandera de validez
+
+    // Validación CI: Obligatorio
+    if (!formData.ci || formData.ci.trim() === '') {
+      nuevosErrores.ci = 'El CI es obligatorio';
+      esValido = false;
+    }
 
     // Regex para validar que solo haya letras y espacios (para Nombre y Paterno)
     const regexSoloLetras = /^[a-zA-ZÁÉÍÓÚáéíóúÑñ][a-zA-ZÁÉÍÓÚáéíóúÑñ\s]*$/;
@@ -142,6 +150,7 @@ const Vendedor = () => {
       if (modoEdicion) {
         // --- LOGICA EDITAR ---
         await ActualizarVendedor(vendedorEditado, {
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -160,6 +169,7 @@ const Vendedor = () => {
       } else {
         // --- LOGICA CREAR ---
         await EnviarVendedor({
+          ci: formData.ci,
           nombre: formData.nombre,
           paterno: formData.paterno,
           materno: formData.materno,
@@ -191,6 +201,7 @@ const Vendedor = () => {
     SetModoEdicion(false);
     SetVendedorEditado(null);
     SetformData({
+      ci: '',
       nombre: '',
       paterno: '',
       materno: '',
@@ -205,6 +216,7 @@ const Vendedor = () => {
     SetModoEdicion(true)
     SetVendedorEditado(vendedor.id_vendedor)
     SetformData({
+      ci: vendedor.ci || '',
       nombre: vendedor.nombre || '',
       paterno: vendedor.paterno || '',
       materno: vendedor.materno || '',
@@ -270,6 +282,7 @@ const Vendedor = () => {
           <TableHead sx={{ bgcolor: 'grey.300' }}>
             <TableRow>
               <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
+              <TableCell sx={{ fontWeight: 'bold' }}>CI</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Paterno</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>Materno</TableCell>
@@ -287,6 +300,7 @@ const Vendedor = () => {
                 <TableCell component="th" scope="row">
                   {vendedor.id_vendedor}
                 </TableCell>
+                <TableCell>{vendedor.ci}</TableCell>
                 <TableCell>{vendedor.nombre}</TableCell>
                 <TableCell>{vendedor.paterno}</TableCell>
                 <TableCell>{vendedor.materno}</TableCell>
@@ -324,6 +338,17 @@ const Vendedor = () => {
         </DialogTitle>
         <DialogContent sx={{ mt: 2 }}>
           <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2, pt: 1 }}>
+            {/* Input CI con validación visual MUI */}
+            <TextField
+              label="CI"
+              name="ci"
+              value={formData.ci}
+              onChange={CambioEntrada}
+              fullWidth
+              variant="outlined"
+              error={!!errors.ci} // Muestra borde rojo
+              helperText={errors.ci} // Mensaje de error
+            />
             {/* Input Nombre con validación visual MUI */}
             <TextField
               label="Nombre"

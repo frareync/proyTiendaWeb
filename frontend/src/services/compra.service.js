@@ -17,3 +17,8 @@ export const EliminarCompra = async (id) => {
   const resultado = await axios.delete(`http://localhost:3001/compra/${id}`)
   return resultado.data
 }
+// 5. OBTENER COMPRAS POR FECHA (Para Reportes)
+export const ObtenerComprasPorFecha = async (fecha) => {
+  const resultado = await axios.get(`http://localhost:3001/compra/fecha/${fecha}`)
+  return resultado.data;
+}
