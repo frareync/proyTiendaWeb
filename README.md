@@ -21,8 +21,12 @@
   - npm run start
   - frontend
   - npm run dev
-6. ingresar :http://localhost:5173/
+6. en backend modificar el archivo db.js
+  - en mi caso el usuario de mysql se encuentra con contraseña.
+  - en caso de usar xampp el usuario de mysql se encuentra sin contraseña.
+  - borrar la contraseña en el archivo db.js root
+7. ingresar :http://localhost:5173/
   - autenticarse con:
   - admin
   - admin123
-  - o usar el otro usuario 
+  - o usar el otro usuario
