@@ -3,6 +3,7 @@
 #### INTEGRANTES
 - Frank Reynaldo Nina Cortez
 - Cristian Rodrigo Marca Lima
+- Grupo 8 Segun revision del auxiliar
 
 ##### Instrucciones
 1. Clonar el repositorio
